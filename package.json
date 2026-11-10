@@ -1,0 +1,22 @@
+{
+  "name": "tap-hoa-my-le",
+  "version": "5.0.0",
+  "private": true,
+  "description": "Tạp Hóa Mỹ Lệ — Next.js static export + Cloudflare Pages Functions + D1",
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/prebuild.cjs",
+    "build": "next build",
+    "db:migrate": "npx wrangler d1 execute hoa-shop --remote --file=migrations/002_v5_danh_muc.sql",
+    "db:samples": "npx wrangler d1 execute hoa-shop --remote --file=migrations/003_san_pham_mau.sql",
+    "deploy": "npm run build && npx wrangler pages deploy out --project-name hoa-shop --branch main"
+  },
+  "dependencies": { "next": "14.2.35", "react": "18.3.1", "react-dom": "18.3.1", "zustand": "4.5.4" },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20240620.0",
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.5.3"
+  }
+}

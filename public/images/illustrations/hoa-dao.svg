@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#F5EBDC"/>
+      <stop offset="100%" stop-color="#E5D5BA"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200 200)">
+    <path d="M -100 100 Q -40 40 0 0 Q 60 -60 110 -100" stroke="#5C3A28" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M -30 -10 Q -60 -30 -90 -50" stroke="#5C3A28" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 30 10 Q 60 30 90 50" stroke="#5C3A28" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="-90" cy="-50" r="7" fill="#C94545"/>
+    <circle cx="90" cy="50" r="7" fill="#C94545"/>
+    <g transform="translate(0 0)">
+      <g fill="#C94545" stroke="#8B1A1A" stroke-width="1.5">
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(60)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(120)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(240)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(300)"/>
+      </g>
+      <g fill="#B22222" stroke="#8B1A1A" stroke-width="1">
+        <ellipse cx="0" cy="-15" rx="9" ry="14"/>
+        <ellipse cx="0" cy="-15" rx="9" ry="14" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-15" rx="9" ry="14" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-15" rx="9" ry="14" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-15" rx="9" ry="14" transform="rotate(288)"/>
+      </g>
+      <circle r="8" fill="#D4AF37"/>
+    </g>
+    <g transform="translate(-70 -50) scale(0.65)">
+      <g fill="#C94545" stroke="#8B1A1A" stroke-width="1.5">
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(288)"/>
+      </g>
+      <circle r="7" fill="#D4AF37"/>
+    </g>
+    <g transform="translate(80 60) scale(0.6)">
+      <g fill="#C94545" stroke="#8B1A1A" stroke-width="1.5">
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(72)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(144)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(216)"/>
+        <ellipse cx="0" cy="-25" rx="13" ry="20" opacity="0.8" transform="rotate(288)"/>
+      </g>
+      <circle r="7" fill="#D4AF37"/>
+    </g>
+  </g>
+  <text x="350" y="380" font-family="serif" font-size="40" fill="#B22222" opacity="0.3" font-weight="bold">春</text>
+</svg>

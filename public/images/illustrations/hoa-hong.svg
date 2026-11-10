@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#F5EBDC"/>
+      <stop offset="100%" stop-color="#E5D5BA"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200 200)">
+    <path d="M -120 -30 L -100 100 L 100 100 L 120 -30 Z" fill="#F5EBDC" stroke="#C9B088" stroke-width="2"/>
+    <path d="M -120 -30 L -100 -50 L 100 -50 L 120 -30 Z" fill="#E5D5BA" stroke="#C9B088" stroke-width="2"/>
+    <path d="M -30 100 L -30 130 L 30 130 L 30 100" fill="#B22222" stroke="#8B1A1A" stroke-width="1"/>
+    <path d="M -50 125 L -30 115 L 0 130 L 30 115 L 50 125 L 30 145 L 0 130 L -30 145 Z" fill="#B22222" stroke="#8B1A1A" stroke-width="1"/>
+    <path d="M -50 100 Q -30 50 -20 -20" stroke="#4A7C3A" stroke-width="3" fill="none"/>
+    <path d="M 0 100 Q 0 50 0 -20" stroke="#4A7C3A" stroke-width="3" fill="none"/>
+    <path d="M 50 100 Q 30 50 20 -20" stroke="#4A7C3A" stroke-width="3" fill="none"/>
+    <ellipse cx="-40" cy="40" rx="18" ry="7" fill="#4A7C3A" transform="rotate(-30 -40 40)"/>
+    <ellipse cx="40" cy="40" rx="18" ry="7" fill="#4A7C3A" transform="rotate(30 40 40)"/>
+    <g transform="translate(-20 -20)">
+      <circle r="32" fill="#8B1A1A"/>
+      <circle r="28" fill="#B22222"/>
+      <path d="M -18 -10 Q 0 -20 18 -10 Q 20 0 10 8 Q 0 12 -10 8 Q -20 0 -18 -10" fill="#C94545" stroke="#8B1A1A" stroke-width="1"/>
+      <circle r="10" fill="#8B1A1A"/>
+      <circle r="5" fill="#5C0F0F"/>
+    </g>
+    <g transform="translate(0 -20)">
+      <circle r="32" fill="#8B1A1A"/>
+      <circle r="28" fill="#B22222"/>
+      <path d="M -18 -10 Q 0 -20 18 -10 Q 20 0 10 8 Q 0 12 -10 8 Q -20 0 -18 -10" fill="#C94545" stroke="#8B1A1A" stroke-width="1"/>
+      <circle r="10" fill="#8B1A1A"/>
+      <circle r="5" fill="#5C0F0F"/>
+    </g>
+    <g transform="translate(20 -20)">
+      <circle r="32" fill="#8B1A1A"/>
+      <circle r="28" fill="#B22222"/>
+      <path d="M -18 -10 Q 0 -20 18 -10 Q 20 0 10 8 Q 0 12 -10 8 Q -20 0 -18 -10" fill="#C94545" stroke="#8B1A1A" stroke-width="1"/>
+      <circle r="10" fill="#8B1A1A"/>
+      <circle r="5" fill="#5C0F0F"/>
+    </g>
+  </g>
+</svg>

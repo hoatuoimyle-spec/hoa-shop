@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#F5EBDC"/>
+      <stop offset="100%" stop-color="#E5D5BA"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200 200)">
+    <path d="M -35 0 Q -45 30 -45 60 L -45 130 Q -45 145 -30 145 L 30 145 Q 45 145 45 130 L 45 60 Q 45 30 35 0 L 35 -30 L -35 -30 Z" fill="#1B2A4E" stroke="#0F1A33" stroke-width="2"/>
+    <rect x="-12" y="-70" width="24" height="40" fill="#1B2A4E" stroke="#0F1A33" stroke-width="1.5"/>
+    <rect x="-13" y="-75" width="26" height="12" fill="#D4AF37" stroke="#B8932E" stroke-width="1"/>
+    <rect x="-40" y="40" width="80" height="80" fill="#FAF4EA" stroke="#C9B088" stroke-width="1.5"/>
+    <rect x="-40" y="40" width="80" height="20" fill="#B22222"/>
+    <text x="0" y="55" font-family="serif" font-size="11" fill="#D4AF37" text-anchor="middle" font-weight="bold">BORDEAUX</text>
+    <text x="0" y="85" font-family="serif" font-size="20" fill="#1B2A4E" text-anchor="middle" font-weight="bold">1990</text>
+    <text x="0" y="105" font-family="serif" font-size="9" fill="#5C4A3F" text-anchor="middle">GRAND CRU</text>
+    <line x1="-30" y1="115" x2="30" y2="115" stroke="#C9B088" stroke-width="1"/>
+    <g transform="translate(110 80)">
+      <path d="M -20 -50 L -16 0 Q 0 5 16 0 L 20 -50 Z" fill="#FAF4EA" stroke="#C9B088" stroke-width="1.5" opacity="0.85"/>
+      <path d="M -15 -40 L -12 -5 Q 0 0 12 -5 L 15 -40 Z" fill="#B22222" opacity="0.8"/>
+      <rect x="-2" y="0" width="4" height="20" fill="#C9B088"/>
+      <ellipse cx="0" cy="20" rx="15" ry="3" fill="#C9B088"/>
+    </g>
+  </g>
+</svg>

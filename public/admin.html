@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Quản trị cửa hàng</title>
+<link rel="stylesheet" href="/admin.css">
+<style>
+  body{padding-bottom:40px}
+  .wrap{margin:0 auto;padding:12px 16px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:var(--rose-l)}
+  .pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;background:#e5e7eb}
+  .s-new{background:#fde68a}.s-confirmed{background:#bfdbfe}.s-making{background:#ddd6fe}.s-delivered{background:#bbf7d0}.s-cancelled{background:#fecaca}
+  .scroll{overflow-x:auto}
+  #msg{position:fixed;left:12px;right:12px;bottom:12px;max-width:520px;margin:0 auto;z-index:50}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login">
+    <h1>Quản trị</h1>
+    <label class="f">Mã quản trị (ADMIN_TOKEN)<input class="in" id="tok" type="password" autocomplete="current-password"></label>
+    <div class="stack"><button class="btn" id="loginBtn" type="button">Đăng nhập</button></div>
+  </div>
+  <div id="app" hidden>
+    <div class="row"><h1 style="margin:0">Quản trị</h1><button class="btn ghost small" id="logout" type="button">Thoát</button></div>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-t="orders" aria-pressed="true">Đơn hàng</button>
+      <button class="chip" data-t="products" aria-pressed="false">Sản phẩm</button>
+      <button class="chip" data-t="settings" aria-pressed="false">Thông tin cửa hàng</button>
+    </div>
+    <section id="t-orders"></section>
+    <section id="t-products" hidden></section>
+    <section id="t-settings" hidden></section>
+  </div>
+</div>
+<div id="msg" class="err" hidden></div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = (n) => new Intl.NumberFormat('vi-VN').format(n) + 'đ';
+  const STATUS = { new: 'Mới', confirmed: 'Đã xác nhận', making: 'Đang làm', delivered: 'Đã giao', cancelled: 'Đã hủy' };
+  let token = sessionStorage.getItem('adm') || '';
+  let TAX = [];
+
+  function toast(text, ok) {
+    const m = $('#msg'); m.textContent = text; m.hidden = false;
+    m.style.background = ok ? '#dcfce7' : '#fee2e2'; m.style.color = ok ? '#166534' : '#991b1b';
+    clearTimeout(toast.t); toast.t = setTimeout(() => (m.hidden = true), 4000);
+  }
+  async function api(path, opt = {}) {
+    const r = await fetch('/api/admin/' + path, {
+      ...opt, headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token },
+      body: opt.body ? JSON.stringify(opt.body) : undefined,
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw Object.assign(new Error(d.error || 'Lỗi ' + r.status), { status: r.status });
+    return d;
+  }
+
+  async function enter() {
+    try { await api('settings'); } catch (e) {
+      sessionStorage.removeItem('adm'); token = '';
+      $('#login').hidden = false; $('#app').hidden = true;
+      if (e.status) toast(e.status === 401 ? 'Sai mã quản trị' : e.message);
+      return;
+    }
+    try { TAX = await (await fetch('/taxonomy.json')).json(); } catch { TAX = []; }
+    $('#login').hidden = true; $('#app').hidden = false;
+    showTab('orders');
+  }
+  $('#loginBtn').onclick = () => { token = $('#tok').value.trim(); sessionStorage.setItem('adm', token); enter(); };
+  $('#tok').onkeydown = (e) => { if (e.key === 'Enter') $('#loginBtn').click(); };
+  $('#logout').onclick = () => { sessionStorage.removeItem('adm'); location.reload(); };
+  $('#tabs').onclick = (e) => { const b = e.target.closest('[data-t]'); if (b) showTab(b.dataset.t); };
+
+  function showTab(t) {
+    document.querySelectorAll('#tabs .chip').forEach((b) => b.setAttribute('aria-pressed', b.dataset.t === t));
+    ['orders', 'products', 'settings'].forEach((k) => ($('#t-' + k).hidden = k !== t));
+    ({ orders: loadOrders, products: loadProducts, settings: loadSettings })[t]();
+  }
+
+  // ----- Đơn hàng -----
+  async function loadOrders() {
+    const el = $('#t-orders'); el.innerHTML = '<p class="muted">Đang tải…</p>';
+    try {
+      const { orders } = await api('orders?limit=100');
+      const unsent = orders.filter((o) => !o.telegramSent && o.status === 'new').length;
+      el.innerHTML = (unsent ? `<div class="err">Có ${unsent} đơn chưa gửi được vào Telegram. <button class="btn small" id="retry" type="button">Gửi lại</button></div>` : '') +
+        `<div class="scroll"><table><thead><tr><th>Mã</th><th>Khách</th><th>Nhận hàng</th><th>Sản phẩm</th><th>Tiền</th><th>Trạng thái</th></tr></thead><tbody>${
+        orders.map((o) => `<tr><td><b>${esc(o.code)}</b><br><small>${new Date(o.createdAt * 1000).toLocaleString('vi-VN')}</small></td>
+          <td>${esc(o.name)}<br><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a><br><small>${esc(o.address)}</small></td>
+          <td>${esc(o.deliveryDate)}<br><small>${esc(o.timeSlot)}</small></td>
+          <td>${o.items.map((i) => `${esc(i.name)} x${i.qty}<br><small>${esc(Object.values(i.options || {}).join(', '))}</small>`).join('<br>')}${o.cardMessage ? `<br><small>Thiệp: ${esc(o.cardMessage)}</small>` : ''}</td>
+          <td>${fmt(o.subtotal)}<br><small>${o.payment === 'bank' ? 'CK toàn bộ' : 'Cọc'} ${fmt(o.depositAmount || 0)}<br>${o.depositAmount ? (o.depositPaid ? 'đã nhận' : 'chưa nhận') : ''}</small></td>
+          <td><span class="pill s-${esc(o.status)}">${STATUS[o.status] || esc(o.status)}</span></td></tr>`).join('') || '<tr><td colspan="6">Chưa có đơn</td></tr>'
+        }</tbody></table></div><p class="muted">Đổi trạng thái đơn bằng các nút trong tin nhắn Telegram.</p>`;
+      const rb = $('#retry');
+      if (rb) rb.onclick = async () => { try { const r = await api('retry-telegram', { method: 'POST' }); toast(`Đã gửi ${r.sent}/${r.pending} đơn`, true); loadOrders(); } catch (e) { toast(e.message); } };
+    } catch (e) { el.innerHTML = ''; toast(e.message); }
+  }
+
+  // ----- Sản phẩm -----
+  let PRODUCTS = [];
+  async function loadProducts() {
+    const el = $('#t-products'); el.innerHTML = '<p class="muted">Đang tải…</p>';
+    try {
+      ({ products: PRODUCTS } = await api('products'));
+      const catName = (p) => { const t = TAX.find((x) => x.slug === p.category); const s = t && t.children.find((c) => c.slug === p.subcategory); return (t ? t.name : p.category) + (s ? ' › ' + s.name : ''); };
+      el.innerHTML = `<div class="row" style="margin-bottom:10px"><b>${PRODUCTS.length} sản phẩm</b><button class="btn small" id="newP" type="button">+ Thêm sản phẩm</button></div>
+        <div class="list">${PRODUCTS.map((p) => `<div class="pr ${p.active ? '' : 'off'}">
+          <img src="${esc(p.images[0] || '')}" alt="" onerror="this.style.visibility='hidden'">
+          <div><b>${esc(p.name)}</b><br><small>${esc(catName(p))} · ${fmt(p.price)}${p.active ? '' : ' · ĐANG ẨN'}${p.inStock ? '' : ' · hết hàng'}</small></div>
+          <div class="stack" style="margin:0"><button class="btn small ghost" data-edit="${esc(p.id)}" type="button">Sửa</button></div></div>`).join('') || '<p class="muted">Chưa có sản phẩm</p>'}</div>`;
+      $('#newP').onclick = () => editor(null);
+      el.onclick = (e) => { const b = e.target.closest('[data-edit]'); if (b) editor(PRODUCTS.find((p) => p.id === b.dataset.edit)); };
+    } catch (e) { el.innerHTML = ''; toast(e.message); }
+  }
+
+  // Nén ảnh trong trình duyệt trước khi tải lên (tối đa 1400px, JPEG)
+  async function compress(file) {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, 1400 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    for (const q of [0.85, 0.7, 0.55, 0.4]) {
+      const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', q));
+      if (blob.size <= 650 * 1024) return blob;
+    }
+    throw new Error('Ảnh quá lớn, hãy chọn ảnh nhỏ hơn');
+  }
+  async function upload(file) {
+    const blob = await compress(file);
+    const r = await fetch('/api/admin/media', { method: 'POST', headers: { authorization: 'Bearer ' + token }, body: blob });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d.error || 'Tải ảnh lỗi');
+    return d.url;
+  }
+  const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70);
+
+  function editor(p) {
+    const isNew = !p;
+    p = p || { id: '', name: '', category: TAX[0] ? TAX[0].slug : '', subcategory: '', price: 0, salePrice: null, images: [], description: '', dimensions: '', materials: '', options: [], leadDays: 0, inStock: true, active: true, featured: false, seoTitle: '', seoDescription: '' };
+    const st = { images: [...p.images], options: JSON.parse(JSON.stringify(p.options || [])) };
+    const el = $('#t-products');
+    el.innerHTML = `<button class="btn ghost small" id="back" type="button">← Danh sách</button>
+    <form id="pf" class="box">
+      <h2>${isNew ? 'Thêm sản phẩm' : 'Sửa: ' + esc(p.name)}</h2>
+      <label class="f">Tên sản phẩm<input class="in" name="name" maxlength="120" required value="${esc(p.name)}"></label>
+      <label class="f">Đường dẫn trang (không dấu, nối bằng gạch ngang)<input class="in" name="id" ${isNew ? '' : 'readonly'} required value="${esc(p.id)}"></label>
+      ${isNew ? '' : `<p class="muted">Trang: <a href="/san-pham/${esc(p.id)}/" target="_blank" rel="noopener">/san-pham/${esc(p.id)}/</a> (không đổi được đường dẫn sau khi tạo để giữ SEO)</p>`}
+      <div class="two">
+        <label class="f">Danh mục<select class="in" name="category">${TAX.map((t) => `<option value="${t.slug}" ${t.slug === p.category ? 'selected' : ''}>${esc(t.name)}</option>`).join('')}</select></label>
+        <label class="f">Danh mục con<select class="in" name="subcategory"></select></label>
+      </div>
+      <div class="two">
+        <label class="f">Giá (VND)<input class="in" name="price" type="number" min="0" step="1000" required value="${p.price}"></label>
+        <label class="f">Giá khuyến mãi (để trống nếu không)<input class="in" name="salePrice" type="number" min="0" step="1000" value="${p.salePrice ?? ''}"></label>
+      </div>
+      <label class="f">Cần đặt trước (ngày, 0 = có thể giao trong ngày)<input class="in" name="leadDays" type="number" min="0" max="60" value="${p.leadDays}"></label>
+      <label class="f">Mô tả<textarea class="in" name="description" rows="5" maxlength="3000">${esc(p.description)}</textarea></label>
+      <div class="two">
+        <label class="f">Kích thước<input class="in" name="dimensions" value="${esc(p.dimensions)}"></label>
+        <label class="f">Chất liệu<input class="in" name="materials" value="${esc(p.materials)}"></label>
+      </div>
+      <label class="f">Ảnh (ảnh đầu là ảnh đại diện)</label>
+      <div class="imgs" id="imgs"></div>
+      <div class="stack"><label class="btn ghost small" style="cursor:pointer">+ Tải ảnh lên<input type="file" id="file" accept="image/*" multiple hidden></label></div>
+      <label class="f">Tùy chọn (kích cỡ, loại… mỗi nhóm có các lựa chọn và mức chênh giá)</label>
+      <div id="opts"></div>
+      <div class="stack"><button class="btn ghost small" id="addOpt" type="button">+ Thêm nhóm tùy chọn</button></div>
+      <div class="chk">
+        <label><input type="checkbox" name="inStock" ${p.inStock ? 'checked' : ''}> Còn hàng</label>
+        <label><input type="checkbox" name="active" ${p.active ? 'checked' : ''}> Hiển thị trên web</label>
+        <label><input type="checkbox" name="featured" ${p.featured ? 'checked' : ''}> Nổi bật ở trang chủ</label>
+      </div>
+      <h3>SEO (tùy chọn, để trống thì tự lấy từ tên và mô tả)</h3>
+      <label class="f">Tiêu đề Google (tối đa 80 ký tự)<input class="in" name="seoTitle" maxlength="80" value="${esc(p.seoTitle)}"></label>
+      <label class="f">Mô tả Google (tối đa 200 ký tự)<textarea class="in" name="seoDescription" rows="2" maxlength="200">${esc(p.seoDescription)}</textarea></label>
+      <div class="stack"><button class="btn" type="submit">Lưu sản phẩm</button>${isNew ? '' : '<button class="btn ghost" id="del" type="button">Xóa sản phẩm</button>'}</div>
+    </form>`;
+    const f = $('#pf').elements;
+    const fillSub = () => {
+      const t = TAX.find((x) => x.slug === f.category.value);
+      f.subcategory.innerHTML = '<option value="">(không)</option>' + (t ? t.children : []).map((c) => `<option value="${c.slug}" ${c.slug === p.subcategory ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+      f.subcategory.disabled = !t || !t.children.length;
+    };
+    fillSub(); f.category.onchange = () => { p.subcategory = ''; fillSub(); };
+    if (isNew) f.name.oninput = () => { f.id.value = slugify(f.name.value); };
+
+    const drawImgs = () => {
+      $('#imgs').innerHTML = st.images.map((u, i) => `<div class="im"><img src="${esc(u)}" alt=""><button type="button" data-rm="${i}" aria-label="Bỏ ảnh">×</button></div>`).join('') || '<span class="muted">Chưa có ảnh</span>';
+    };
+    drawImgs();
+    $('#imgs').onclick = (e) => { const b = e.target.closest('[data-rm]'); if (b) { st.images.splice(+b.dataset.rm, 1); drawImgs(); } };
+    $('#file').onchange = async (e) => {
+      for (const file of e.target.files) {
+        try { toast('Đang tải ' + file.name + '…', true); st.images.push(await upload(file)); drawImgs(); toast('Đã tải ảnh', true); } catch (er) { toast(er.message); }
+      }
+      e.target.value = '';
+    };
+
+    const drawOpts = () => {
+      $('#opts').innerHTML = st.options.map((o, i) => `<div class="optg" data-o="${i}">
+        <div class="row"><input class="in" data-on placeholder="Tên nhóm, ví dụ Kích cỡ" value="${esc(o.name)}"><button type="button" class="btn ghost small" data-rmo>Xóa nhóm</button></div>
+        ${o.choices.map((c, j) => `<div class="optc" data-c="${j}"><input class="in" data-cl placeholder="Lựa chọn" value="${esc(c.label)}"><input class="in" data-cd type="number" step="1000" placeholder="+/- giá" value="${c.delta}"><button type="button" data-rmc aria-label="Xóa">×</button></div>`).join('')}
+        <button type="button" class="btn ghost small" data-addc style="margin-top:8px">+ Lựa chọn</button></div>`).join('');
+    };
+    const syncOpts = () => {
+      st.options = [...document.querySelectorAll('#opts .optg')].map((g) => ({
+        name: g.querySelector('[data-on]').value.trim(),
+        choices: [...g.querySelectorAll('.optc')].map((r) => ({ label: r.querySelector('[data-cl]').value.trim(), delta: Math.round(Number(r.querySelector('[data-cd]').value) || 0) })),
+      }));
+    };
+    drawOpts();
+    $('#addOpt').onclick = () => { syncOpts(); st.options.push({ name: '', choices: [{ label: '', delta: 0 }] }); drawOpts(); };
+    $('#opts').onclick = (e) => {
+      const g = e.target.closest('.optg'); if (!g) return;
+      syncOpts(); const i = +g.dataset.o;
+      if (e.target.closest('[data-rmo]')) st.options.splice(i, 1);
+      else if (e.target.closest('[data-addc]')) st.options[i].choices.push({ label: '', delta: 0 });
+      else if (e.target.closest('[data-rmc]')) st.options[i].choices.splice(+e.target.closest('.optc').dataset.c, 1);
+      else return;
+      drawOpts();
+    };
+
+    $('#back').onclick = loadProducts;
+    if (!isNew) $('#del').onclick = async () => {
+      if (!confirm('Xóa hẳn sản phẩm này? Nếu chỉ muốn tạm ngừng bán, hãy bỏ tích "Hiển thị trên web".')) return;
+      try { await api('products?id=' + encodeURIComponent(p.id), { method: 'DELETE' }); toast('Đã xóa', true); loadProducts(); } catch (er) { toast(er.message); }
+    };
+    $('#pf').onsubmit = async (e) => {
+      e.preventDefault(); syncOpts();
+      const opts = st.options.filter((o) => o.name || o.choices.some((c) => c.label));
+      const body = {
+        id: f.id.value.trim(), name: f.name.value.trim(), category: f.category.value, subcategory: f.subcategory.value,
+        price: Math.round(Number(f.price.value)), salePrice: f.salePrice.value === '' ? null : Math.round(Number(f.salePrice.value)),
+        leadDays: Math.round(Number(f.leadDays.value || 0)), description: f.description.value, dimensions: f.dimensions.value, materials: f.materials.value,
+        options: opts, images: st.images, inStock: f.inStock.checked, active: f.active.checked, featured: f.featured.checked,
+        seoTitle: f.seoTitle.value, seoDescription: f.seoDescription.value,
+      };
+      try {
+        await api('products', { method: isNew ? 'POST' : 'PATCH', body });
+        toast('Đã lưu. Trang sản phẩm cập nhật ngay.', true); loadProducts();
+      } catch (er) { toast(er.message); }
+    };
+    window.scrollTo(0, 0);
+  }
+
+  // ----- Thông tin cửa hàng -----
+  const LABELS = {
+    shop_name: 'Tên cửa hàng', shop_phone: 'Số điện thoại (hiện trên web và để khách gọi)', zalo: 'Số Zalo', shop_address: 'Địa chỉ cửa hàng',
+    opening_hours: 'Giờ mở cửa (ví dụ 6:00 - 21:00 hằng ngày)', facebook_url: 'Link Facebook', tiktok_url: 'Link TikTok',
+    accepting_orders: 'Nhận đơn trên web (1 = bật, 0 = tắt)', notice: 'Thông báo đầu trang (ví dụ nghỉ Tết từ ngày…)',
+    daily_order_limit: 'Giới hạn số đơn mỗi ngày giao (0 = không giới hạn)', same_day_cutoff_hour: 'Giờ chốt đơn giao trong ngày (0–23)',
+    ship_note: 'Ghi chú phí giao hàng', bank_info: 'Ghi chú chuyển khoản (chỉ hiện khi chưa điền STK bên dưới)',
+    deposit_percent: 'Phần trăm đặt cọc (50 = 50%)',
+    bank_bin: 'Ngân hàng để tạo QR (mã như VCB, MB, ACB, TCB, BIDV, VPB hoặc mã BIN)',
+    bank_account: 'Số tài khoản nhận tiền', bank_account_name: 'Tên chủ tài khoản (không dấu, in hoa)',
+  };
+  async function loadSettings() {
+    const el = $('#t-settings');
+    try {
+      const { settings } = await api('settings');
+      el.innerHTML = `<form id="setForm" class="box">${
+        Object.keys(LABELS).map((k) => `<label class="f">${LABELS[k]}<textarea class="in" name="${k}" rows="${k === 'bank_info' ? 3 : 1}">${esc(settings[k] ?? '')}</textarea></label>`).join('')
+      }<div class="stack"><button class="btn" type="submit">Lưu thông tin</button></div></form>`;
+      $('#setForm').onsubmit = async (e) => {
+        e.preventDefault(); const body = {};
+        for (const k of Object.keys(LABELS)) body[k] = e.target.elements[k].value.trim();
+        try { await api('settings', { method: 'PUT', body }); toast('Đã lưu', true); } catch (er) { toast(er.message); }
+      };
+    } catch (e) { toast(e.message); }
+  }
+
+  if (token) enter();
+})();
+</script>
+</body>
+</html>

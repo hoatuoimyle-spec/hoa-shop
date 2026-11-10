@@ -1,0 +1,21 @@
+[
+  { "slug": "gio-qua-tet", "name": "Giỏ quà Tết", "short": "Giỏ quà", "desc": "Giỏ quà Tết thiết kế theo ngân sách và yêu cầu riêng, cho gia đình, đối tác và doanh nghiệp.", "children": [] },
+  { "slug": "banh-keo", "name": "Bánh kẹo", "short": "Bánh kẹo", "desc": "Bánh kẹo các loại, đóng hộp, decor theo yêu cầu.", "children": [] },
+  { "slug": "hoa-tuoi", "name": "Hoa tươi", "short": "Hoa tươi", "desc": "Hoa tươi cắm theo yêu cầu: bó hoa, giỏ hoa, kệ hoa, hoa cưới, hoa cúng và combo quà tặng kèm hoa.", "children": [
+    { "slug": "bo-hoa", "name": "Bó hoa" },
+    { "slug": "gio-hop-hoa", "name": "Giỏ và hộp hoa" },
+    { "slug": "ke-hoa-chuc-mung", "name": "Kệ hoa chúc mừng" },
+    { "slug": "ke-hoa-chia-buon", "name": "Kệ hoa chia buồn" },
+    { "slug": "hoa-cuoi", "name": "Hoa cưới" },
+    { "slug": "trap-cuoi", "name": "Tráp cưới" },
+    { "slug": "xe-hoa-cuoi", "name": "Xe hoa cưới" },
+    { "slug": "hoa-cung", "name": "Hoa cúng, hoa lễ tâm linh" },
+    { "slug": "combo-hoa-qua-tang", "name": "Combo quà tặng kèm hoa" },
+    { "slug": "hoa-tien-hoa-an-duoc", "name": "Hoa tiền, hoa ăn được" }
+  ] },
+  { "slug": "hoa-sap-hoa-lua", "name": "Hoa sáp, hoa lụa", "short": "Hoa sáp, hoa lụa", "desc": "Hoa sáp và hoa lụa làm thủ công, giữ đẹp lâu, không cần chăm sóc.", "children": [
+    { "slug": "hoa-sap", "name": "Hoa sáp" },
+    { "slug": "hoa-lua", "name": "Hoa lụa" }
+  ] },
+  { "slug": "qua-tang-khac", "name": "Quà tặng khác", "short": "Quà tặng khác", "desc": "Các món quà tặng khác theo yêu cầu.", "children": [] }
+]

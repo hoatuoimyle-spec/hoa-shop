@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#F5EBDC"/>
+      <stop offset="100%" stop-color="#E5D5BA"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200 200)">
+    <rect x="-130" y="-50" width="260" height="180" fill="#5C3A18" stroke="#3D2710" stroke-width="3" rx="6"/>
+    <path d="M -135 -60 L -135 -90 L 135 -90 L 135 -60 Z" fill="#8B5A2B" stroke="#5C3A18" stroke-width="2"/>
+    <rect x="-120" y="-45" width="240" height="170" fill="#8B1A1A" rx="3"/>
+    <g stroke="#3D2710" stroke-width="0.8" opacity="0.5">
+      <line x1="-130" y1="-20" x2="130" y2="-20"/>
+      <line x1="-130" y1="20" x2="130" y2="20"/>
+      <line x1="-130" y1="60" x2="130" y2="60"/>
+      <line x1="-130" y1="100" x2="130" y2="100"/>
+    </g>
+    <path d="M -130 -50 L -110 -50 L -110 -30 L -130 -30 Z" fill="#D4AF37"/>
+    <path d="M 130 -50 L 110 -50 L 110 -30 L 130 -30 Z" fill="#D4AF37"/>
+    <path d="M -130 130 L -110 130 L -110 110 L -130 110 Z" fill="#D4AF37"/>
+    <path d="M 130 130 L 110 130 L 110 110 L 130 110 Z" fill="#D4AF37"/>
+    <g transform="translate(-70 -20)">
+      <rect x="-20" y="-40" width="40" height="120" fill="#D4AF37" stroke="#B8932E" stroke-width="1.5" rx="2"/>
+      <rect x="-8" y="-65" width="16" height="30" fill="#D4AF37" stroke="#B8932E" stroke-width="1"/>
+      <rect x="-20" y="-10" width="40" height="40" fill="#FAF4EA"/>
+      <text x="0" y="10" font-family="serif" font-size="10" fill="#1B2A4E" text-anchor="middle" font-weight="bold">GOLD</text>
+      <text x="0" y="22" font-family="serif" font-size="8" fill="#8B1A1A" text-anchor="middle">LABEL</text>
+    </g>
+    <g transform="translate(50 -10)">
+      <rect x="-25" y="-30" width="50" height="100" fill="#1B2A4E" stroke="#0F1A33" stroke-width="1.5" rx="3"/>
+      <rect x="-25" y="-15" width="50" height="30" fill="#D4AF37"/>
+      <text x="0" y="5" font-family="serif" font-size="18" fill="#1B2A4E" text-anchor="middle" font-weight="bold">茶</text>
+      <text x="0" y="40" font-family="serif" font-size="8" fill="#D4AF37" text-anchor="middle">THÁI NGUYÊN</text>
+      <text x="0" y="55" font-family="serif" font-size="6" fill="#D4AF37" text-anchor="middle">ĐINH TÂN CƯƠNG</text>
+    </g>
+    <g transform="translate(0 60)">
+      <rect x="-30" y="-10" width="60" height="20" fill="#D4AF37" stroke="#B8932E" stroke-width="1.5" rx="2"/>
+      <text x="0" y="4" font-family="serif" font-size="9" fill="#5C3A18" text-anchor="middle" font-weight="bold">GOLD 999.9</text>
+    </g>
+    <path d="M -130 -45 Q 0 -60 130 -45" stroke="#D4AF37" stroke-width="3" fill="none"/>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+# Dự án Cloudflare Pages tên "hoa-shop" (giữ nguyên để đè lên web đang chạy).
+name = "hoa-shop"
+pages_build_output_dir = "out"
+compatibility_date = "2025-01-01"
+
+# Dùng lại database "hoa-shop" đang có (giữ nguyên đơn cũ). Dán database_id của bạn vào đây.
+[[d1_databases]]
+binding = "DB"
+database_name = "hoa-shop"
+database_id = "0e9fbb8c-5f12-4706-b283-1ec5f4b3a77f"
+
+# Chat ID nhận đơn (không phải bí mật). TELEGRAM_BOT_TOKEN và ADMIN_TOKEN là secret đã đặt trên Cloudflare.
+[vars]
+TELEGRAM_CHAT_ID = "8110910148"
