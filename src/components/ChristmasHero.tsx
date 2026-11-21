@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useCatalog } from './CatalogProvider';
 import { FOUNDED, SHOP_NAME } from '@/data/site';
-import Snowfall from './Snowfall';
 
 export default function ChristmasHero() {
   const { settings } = useCatalog();
@@ -11,7 +10,6 @@ export default function ChristmasHero() {
 
   return (
     <section className="xmas-hero">
-      <Snowfall />
       <div className="xmas-hero-bg" aria-hidden="true">
         <div className="xmas-tree">
           <div className="tree-tier tree-tier-1"></div>

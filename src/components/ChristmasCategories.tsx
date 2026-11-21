@@ -8,10 +8,14 @@ const CATEGORY_ICONS: Record<string, string> = {
   'banh-keo': '🍪',
   'hoa-tuoi': '🌸',
   'hoa-sap-hoa-lua': '🏵️',
-  'qua-tang-khac': '✨',
 };
 
+// Chỉ hiển thị 4 nhóm chính trên landing page Giáng Sinh (không sửa taxonomy gốc)
+const ALLOWED_SLUGS = ['gio-qua-tet', 'hoa-tuoi', 'hoa-sap-hoa-lua', 'banh-keo'];
+
 export default function ChristmasCategories() {
+  const filteredCategories = TAXONOMY.filter((c) => ALLOWED_SLUGS.includes(c.slug));
+
   return (
     <section className="xmas-categories">
       <div className="container">
@@ -20,7 +24,7 @@ export default function ChristmasCategories() {
           <h2 className="section-title">Bạn đang tìm gì?</h2>
         </div>
         <div className="categories-grid">
-          {TAXONOMY.map((c) => (
+          {filteredCategories.map((c) => (
             <Link key={c.slug} href={`/danh-muc/${c.slug}/`} className="category-card">
               <div className="category-emoji">{CATEGORY_ICONS[c.slug] || '✨'}</div>
               <h3>{c.name}</h3>

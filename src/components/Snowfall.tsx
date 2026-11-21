@@ -6,9 +6,11 @@ import { useEffect, useState } from 'react';
  * Snowfall — Hiệu ứng rơi tuyết Giáng Sinh.
  * Chính xác 50 hạt tuyết, CSS animation, pointer-events: none.
  * Hỗ trợ prefers-reduced-motion: reduce để tắt animation.
+ * Xử lý hydration mismatch: khởi tạo reducedMotion = false, sau khi mount mới cập nhật.
  */
 export default function Snowfall() {
   const [flakes, setFlakes] = useState<Array<{ id: number; left: number; size: number; opacity: number; duration: number; delay: number; drift: number }>>([]);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
     const flakesList: Array<{ id: number; left: number; size: number; opacity: number; duration: number; delay: number; drift: number }> = [];
@@ -26,12 +28,16 @@ export default function Snowfall() {
     setFlakes(flakesList);
   }, []);
 
-  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+  }, []);
 
   return (
     <div
       className="snowfall-container"
-      style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}
+      style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'visible' }}
       aria-hidden="true"
     >
       {flakes.map((f) => (
