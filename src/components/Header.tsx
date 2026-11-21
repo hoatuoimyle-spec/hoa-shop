@@ -1,4 +1,3 @@
-// src/components/Header.tsx — Thanh trên cùng + menu
 'use client';
 
 import Link from 'next/link';
@@ -25,10 +24,12 @@ export default function Header({ onOpenSearch }: { onOpenSearch: () => void }) {
 
   return (
     <>
-      <div className="topbar">
-        <div className="topbar-inner">
-          <span className="topbar-msg">{settings?.notice || `${name} · Mở cửa từ năm ${FOUNDED} · Long Phú, Cần Thơ`}</span>
-          <div className="topbar-contact">
+      <div className="xmas-topbar">
+        <div className="xmas-topbar-inner">
+          <span className="xmas-topbar-msg">
+            Chúc Mừng Giáng Sinh 2026 · {name} · Mở cửa từ năm {FOUNDED} · Long Phú, Cần Thơ
+          </span>
+          <div className="xmas-topbar-contact">
             {settings?.shopPhone && <a href={`tel:${settings.shopPhone}`}>☎ {settings.shopPhone}</a>}
             {settings?.shopPhone && settings?.hours && <span className="dot">•</span>}
             {settings?.hours && <span>{settings.hours}</span>}
