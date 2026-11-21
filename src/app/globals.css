@@ -1684,3 +1684,189 @@ button {
   .order-grid { grid-template-columns: 1fr; }
   .page-pad { padding-top: 20px; padding-bottom: 96px; }
 }
+
+/* ============== CHRISTMAS 2026 — TẠP HÓA MỸ LỆ ==============
+   Màu thương hiệu (KHÔNG dùng màu Taste-Skill từ PR trước):
+   Đỏ son #B22222 — CTA, nút, badge, giá
+   Navy đậm #1B2A4E — Header, top bar, footer
+   Navy sâu #0F1A33 — Nền tối
+   Nâu pastel #F5EBDC — Nền chính
+   Nâu pastel trung gian #E5D5BA — Viền
+   Nâu pastel đậm #D9C4A0 — Chi tiết
+   Trắng tuyết #FFFFFF
+   Vàng champagne #C9A227 — Điểm nhấn
+   Xanh lá thông #2D5A27 — Chỉ dùng cho cây thông/họa tiết
+*/
+
+/* CSS variables cho Giáng Sinh */
+:root {
+  --xmas-red: #B22222;
+  --xmas-red-deep: #8B1A1A;
+  --xmas-navy: #1B2A4E;
+  --xmas-navy-deep: #0F1A33;
+  --xmas-cream: #F5EBDC;
+  --xmas-cream-mid: #E5D5BA;
+  --xmas-cream-dark: #D9C4A0;
+  --xmas-gold: #C9A227;
+  --xmas-gold-light: #E8D9B0;
+  --xmas-white: #FFFFFF;
+  --xmas-pine: #2D5A27;
+  --xmas-ink: #2A2420;
+  --xmas-ink-soft: #5C5248;
+}
+
+/* Hero content must be ABOVE snowfall (zIndex > 0) */
+.xmas-hero-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* Hero background elements should be below content but above snow */
+.xmas-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Snowflake container: zIndex 0, below all content */
+.snowfall-container {
+  z-index: 5;
+}
+
+/* Snowflakes themselves */
+.snowflake {
+  pointer-events: none;
+}
+
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce) {
+  .snowflake {
+    animation: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* ============== CHRISTMAS CATEGORIES — FILTER 4 GROUPS ============== */
+/* Only show the 4 main groups on landing page */
+.xmas-categories .categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.xmas-categories .category-card {
+  background: var(--xmas-white);
+  border: 1.5px solid var(--xmas-cream-mid);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+  transition: all var(--t);
+  color: var(--xmas-navy-deep);
+  display: block;
+  text-decoration: none;
+}
+
+.xmas-categories .category-card:hover {
+  background: var(--xmas-navy-deep);
+  color: var(--xmas-cream);
+  border-color: var(--xmas-navy-deep);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+.xmas-categories .category-card:hover h3 { color: var(--xmas-gold-light); }
+.xmas-categories .category-card:hover p { color: var(--xmas-cream-mid); }
+.xmas-categories .category-card:hover .category-arrow { color: var(--xmas-gold-light); }
+
+.xmas-categories .category-emoji {
+  font-size: 44px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.xmas-categories .category-card h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  transition: color var(--t);
+}
+
+.xmas-categories .category-card p {
+  font-size: 14px;
+  color: var(--xmas-ink-soft);
+  margin-bottom: 20px;
+  transition: color var(--t);
+}
+
+.xmas-categories .category-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--xmas-red);
+  transition: color var(--t);
+}
+
+.xmas-categories .section-head {
+  text-align: center;
+  margin-bottom: 64px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.xmas-categories .section-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--xmas-red);
+  margin-bottom: 12px;
+}
+
+.xmas-categories .section-title {
+  font-size: clamp(30px, 5vw, 48px);
+  margin-bottom: 16px;
+  color: var(--xmas-navy-deep);
+}
+
+/* ============== CHRISTMAS 2026 — SNOWFALL FIX ============== */
+/* Snowfall animation keyframes */
+@keyframes snowfall-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 20px));
+    opacity: 0;
+  }
+}
+
+/* Ensure snowfall is NOT clipped by overflow: hidden on parent */
+.xmas-hero {
+  overflow: visible;
+}
+
+/* Snowflakes themselves */
+.snowflake {
+  pointer-events: none;
+}
+
+/* Reduce motion support */
+@media (prefers-reduced-motion: reduce) {
+  .snowflake {
+    animation: none !important;
+    box-shadow: none !important;
+  }
+}
